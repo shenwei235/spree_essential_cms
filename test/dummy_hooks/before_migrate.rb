@@ -1,3 +1,8 @@
+# Require spree_essential_example and spree_atuh in config/application.rb
+gsub_file "config/application.rb", 'require "spree_essential_cms"', %(require "spree_essential_cms"
+require "spree_auth_devise"
+require "spree")
+
 # Install spree's migrations
 rake "spree:install:migrations"
 
