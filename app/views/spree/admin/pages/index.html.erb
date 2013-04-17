@@ -1,57 +1,89 @@
-<div class='toolbar'>
-  <ul class='actions'>
-    <li>
-      <p><%= button_link_to t('.new_page'), new_object_url, :icon => 'add' %></p>
-    </li>
-  </ul>
-  <br class='clear' />
-</div>
+<% content_for :page_title do %>
+  <%= t('.listing_pages') %>
+<% end %>
 
-<h1><%= t('.listing_pages') %></h1>
+<% content_for :page_actions do %>
+  <div class="toolbar" data-hook="toolbar">
+    <ul class="actions header-action-links inline-menu">
+      <li id="new_product_link">
+        <%= button_link_to t('.new_page'), new_object_url, :icon => 'icon-plus' %>
+      </li>
+    </ul>
+  </div>
+<% end %>
 
-<table class="index sortable" data-sortable-link="<%= update_positions_admin_pages_url -%>">
-  <thead>
-  <tr>
-      <th><%= sort_link @search, :title, t("page.title") %></th>
-      <th><%= sort_link @search, :path, t("page.path") %></th>
-      <th><%= sort_link @search, :accessible, t("page.accessible") %></th>
-      <th><%= sort_link @search, :visible, t("page.visible") %></th>
-      <th><%= t("action") %></th>
-  </tr>
-  </thead>
-  <tbody>
-    <%- @collection.each do |page|%>
-    <tr id="<%= spree_dom_id page %>">
-      <td><span class="handle">&nbsp;</span>&nbsp; <%=link_to page.title, object_url(page) %></td>
-      <td><%= page.path %></td>
-      <td><%= page.accessible %></td>
-      <td><%= page.visible %></td>
-      <td>
-        <%= link_to_with_icon :accept, t('preview'), page.path, :onclick => 'window.open(this.href);return false;' %> &nbsp;
-        <%= link_to_with_icon :pages, t('page.contents'), admin_page_contents_path(page) %> &nbsp;
-        <%= link_to_edit page %> &nbsp;
-        <%= link_to_delete page %>
-      </td>
-    </tr>
-    <% end %>
-  </tbody>
-</table>
+<% content_for :table_filter_title do %>
+  <%= t(:search) %>
+<% end %>
 
-<%= paginate @collection %>
-
-<% content_for :sidebar do %>
-  <div class="box">
-    <h3><%= t(:search) %></h3>
+<% content_for :table_filter do %>
+  <div data-hook="admin_content_pages_sidebar">
     <%= search_form_for [:admin, @search] do |f| %>
-      <p>
-        <%= f.label :title_cont, t('page.title') %><br />
-        <%= f.text_field :title_cont, :size => 25 %>
-      </p>
-      <p>
-        <%= f.label :path_cont, t('page.path') %><br />
-        <%= f.text_field :path_cont, :size => 25 %>
-      </p>
-      <p><%= button t("search") %></p>
+      <div data-hook="admin_products_index_search">
+        <div class="alpha seven columns">
+          <div class="field">
+            <%= f.label :title_cont, t('page.title') %><br />
+            <%= f.text_field :title_cont, :size => 25 %>
+          </div>
+        </div>
+      </div>
+      <div data-hook="admin_products_index_search">
+        <div class="alpha nine columns">
+          <div class="field">
+            <%= f.label :path_cont, t('page.path') %><br />
+            <%= f.text_field :path_cont, :size => 25 %>
+          </div>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+
+      <div class="form-buttons actions filter-actions" data-hook="admin_products_index_search_buttons">
+        <%= button t(:search), 'icon-search' %>
+      </div>
     <% end %>
+  </div>
+<% end %>
+
+<% if @collection.any? %>
+  <table class="index" data-sortable-link="<%= update_positions_admin_pages_url -%>">
+    <colgroup>
+      <col style="width: 28%;">
+      <col style="width: 20%;">
+      <col style="width: 12%;">
+      <col style="width: 10%;">
+      <col style="width: 30%;">
+    </colgroup>
+
+    <thead>
+      <tr>
+        <th><%= sort_link @search, :title, t("page.title") %></th>
+        <th><%= sort_link @search, :path, t("page.path") %></th>
+        <th><%= sort_link @search, :accessible, t("page.accessible") %></th>
+        <th><%= sort_link @search, :visible, t("page.visible") %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%- @collection.each do |page|%>
+      <tr id="<%= spree_dom_id page %>">
+        <td><span class="handle">&nbsp;</span>&nbsp; <%=link_to page.title, object_url(page) %></td>
+        <td><%= page.path %></td>
+        <td><%= page.accessible %></td>
+        <td><%= page.visible %></td>
+        <td class="actions">
+          <%= link_to_with_icon :preview, t('preview'), page.path, :target => '_blank' %> &nbsp;
+          <%= link_to_with_icon :pages, t('page.contents'), admin_page_contents_path(page) %> &nbsp;
+          <%= link_to_edit page, :no_text => true %> &nbsp;
+          <%= link_to_delete page, :no_text => true %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @collection %>
+<% else %>
+  <div class="no-objects-found">
+    <%= t(:no_results) %>
   </div>
 <% end %>
