@@ -1,10 +1,3 @@
-class Spree::PossiblePage
-  def self.matches?(request) 
-    return false if request.path =~ /(^\/+(admin|account|cart|checkout|content|login|pg\/|orders|products|s\/|session|signup|shipments|states|t\/|tax_categories|user)+)/
-    !Spree::Page.active.find_by_path(request.path).nil?
-  end
-end
-
 Spree::Core::Engine.routes.append do
   
   namespace :admin do
